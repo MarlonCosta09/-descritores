@@ -514,7 +514,18 @@
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) { throw new Error(`Erro na API: ${response.statusText}`); }
+        if (!response.ok) {
+            let errorBody;
+            try {
+                errorBody = await response.json();
+            } catch (e) {
+                // Se o corpo do erro não for JSON, usa o texto de status
+                throw new Error(`Erro na API (${response.status}): ${response.statusText}`);
+            }
+            const errorMessage = errorBody?.error?.message || 'Mensagem de erro não encontrada na resposta.';
+            console.error("Detalhes do erro da API:", errorBody);
+            throw new Error(`Erro na API (${response.status}): ${errorMessage}`);
+        }
 
         const result = await response.json();
         const candidate = result.candidates?.[0];
@@ -530,5 +541,4 @@
 
 </body>
 </html>
-
 
