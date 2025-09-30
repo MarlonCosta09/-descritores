@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>+Descritores - Gerador de Conteúdo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .text-outline {
+            text-shadow: 
+                -1px -1px 0 #4c1d95,  
+                 1px -1px 0 #4c1d95,
+                -1px  1px 0 #4c1d95,
+                 1px  1px 0 #4c1d95,
+                 -2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        .modal-fade-in { animation: fadeIn 0.3s ease-in-out; }
+        .modal-content-in { animation: modalIn 0.3s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Estilos para o feedback do quiz */
+        .opcao-correta {
+            background-color: #dcfce7 !important; /* green-100 */
+            border-color: #4ade80 !important; /* green-400 */
+            color: #166534; /* green-800 */
+        }
+        .opcao-incorreta {
+            background-color: #fee2e2 !important; /* red-100 */
+            border-color: #f87171 !important; /* red-400 */
+            color: #991b1b; /* red-800 */
+        }
+        .progress-bar-evolving {
+            animation: progress-evolve 2.5s ease-in-out infinite;
+            background-image: linear-gradient(to right, #8b5cf6, #a78bfa);
+            transform-origin: left;
+        }
+        @keyframes progress-evolve {
+            0% { transform: scaleX(0); }
+            45% { transform: scaleX(1); }
+            55% { transform: scaleX(1); }
+            100% { transform: scaleX(0); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-violet-50 text-slate-800 flex items-center justify-center min-h-screen py-8">
+
+    <div class="w-full max-w-4xl mx-auto p-4 md:p-8">
+        <header class="text-center mb-8 md:mb-12">
+            <div class="flex items-center justify-center gap-x-3 md:gap-x-4">
+                <svg class="w-12 h-12 md:w-16 md:h-16 text-indigo-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 text-outline"><span class="text-red-500">+</span>Descritores</h1>
+            </div>
+            <p class="text-slate-500 mt-3 text-lg">Praticando os Descritores de Língua Portuguesa</p>
+        </header>
+
+        <main id="app">
+            <!-- Tela 1: Seleção de Série -->
+            <section id="tela-series" class="fade-in">
+                <div class="bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <h2 class="text-2xl font-semibold mb-6 text-center">Comece por aqui</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <button id="btn-simulado-paebs" class="text-center p-5 bg-gradient-to-tr from-purple-600 to-indigo-600 text-white rounded-xl hover:scale-105 transition-transform shadow-lg hover:shadow-purple-200">
+                            <span class="font-bold text-lg">Simulado PAEBS</span>
+                            <p class="text-xs text-indigo-100 mt-1">Foco: 5º, 9º ano e 3º EM (24 questões)</p>
+                        </button>
+                        <button id="btn-simulado-ama" class="text-center p-5 bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-white rounded-xl hover:scale-105 transition-transform shadow-lg hover:shadow-violet-200">
+                             <span class="font-bold text-lg">Simulado AMA</span>
+                             <p class="text-xs text-fuchsia-100 mt-1">A partir do 5º ano</p>
+                        </button>
+                    </div>
+
+                    <div class="border-t border-slate-200 pt-6">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            <!-- As séries serão inseridas aqui pelo JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOVA TELA DE SELEÇÃO DE SÉRIE PARA SIMULADO -->
+            <section id="tela-selecao-simulado" class="hidden fade-in">
+                <div class="bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <div class="flex items-center mb-6">
+                         <button id="btn-voltar-simulado" class="mr-4 p-2 rounded-full hover:bg-slate-100 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                         </button>
+                         <h2 id="titulo-selecao-simulado" class="text-2xl font-semibold"></h2>
+                    </div>
+                    <div id="grid-series-simulado" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <!-- As séries para o simulado serão inseridas aqui -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tela 2: Conteúdo Gerado (Quiz) -->
+            <section id="tela-conteudo" class="hidden fade-in">
+                <div class="bg-white/70 backdrop-blur-xl p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200">
+                    <div class="flex items-center mb-6">
+                         <button id="btn-voltar-inicio" class="mr-4 p-2 rounded-full hover:bg-slate-100 transition-colors">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                         </button>
+                         <h2 class="text-2xl font-semibold">Questionário</h2>
+                    </div>
+
+                    <!-- Indicador de Carregamento -->
+                    <div id="loading" class="flex flex-col items-center justify-center my-12 w-full max-w-sm mx-auto">
+                         <p class="text-lg font-medium mb-4 text-slate-600">Gerando Conteúdo...</p>
+                         <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                            <div class="h-2.5 rounded-full progress-bar-evolving"></div>
+                         </div>
+                    </div>
+
+                    <!-- QUIZ INTERATIVO -->
+                    <div id="quiz-container" class="hidden">
+                        <div id="quiz-texto-base" class="prose max-w-none mb-8 bg-slate-50 p-4 rounded-lg border"></div>
+                        <h3 class="text-xl font-semibold text-indigo-700 mb-6">Questões</h3>
+                        <div id="quiz-questoes" class="space-y-6">
+                            <!-- As questões interativas serão inseridas aqui -->
+                        </div>
+                         <div id="quiz-gabarito" class="mt-12 hidden">
+                            <h3 class="text-xl font-semibold text-indigo-700 mb-4">Gabarito</h3>
+                            <div id="gabarito-content" class="p-4 bg-slate-100 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4"></div>
+                        </div>
+                        <div id="quiz-resultado" class="mt-8 hidden text-center"></div>
+                         <div class="text-center mt-10 flex flex-wrap justify-center gap-4">
+                            <button id="btn-finalizar-quiz" class="hidden bg-green-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-green-700 transition-transform hover:scale-105 shadow-lg">Finalizar e Ver Gabarito</button>
+                            <button id="btn-voltar-ao-inicio" class="hidden bg-slate-500 text-white font-semibold py-3 px-8 rounded-lg hover:bg-slate-600 transition-transform hover:scale-105 shadow-lg">Voltar ao Início</button>
+                        </div>
+                    </div>
+
+                    <!-- Caixa de Mensagem de Erro -->
+                    <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para Seleção de Descritores -->
+    <div id="modal-descritores" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 modal-fade-in">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 md:p-8 transform transition-all modal-content-in">
+            <!-- Cabeçalho do Modal -->
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <h2 id="modal-serie-titulo" class="text-2xl font-semibold text-purple-700"></h2>
+                    <p class="text-slate-600 mt-1">Selecione um ou mais descritores:</p>
+                </div>
+                <button id="btn-fechar-modal" class="p-2 rounded-full hover:bg-slate-100 transition-colors">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            <!-- Corpo do Modal -->
+            <div id="lista-descritores-modal" class="space-y-3 max-h-72 overflow-y-auto pr-2 rounded-lg bg-slate-50/50 p-4 border">
+                <!-- Descritores inseridos aqui -->
+            </div>
+            <!-- Rodapé do Modal -->
+            <div id="modal-error" class="hidden text-red-600 text-sm text-center mt-4">Por favor, selecione pelo menos um descritor.</div>
+            <button id="btn-gerar-conteudo-modal" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg mt-8 hover:scale-105 transition-transform shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300">
+                Gerar Questionário
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // --- BANCO DE DADOS DE DESCRITORES ---
+    const descritores1e2ano = [ { id: 'BNCC1', habilidade: 'EF01LP01', texto: 'Reconhecer a direção da escrita e a ordem das letras em palavras.' }, { id: 'BNCC2', habilidade: 'EF01LP02', texto: 'Escrever palavras e frases simples de forma alfabética.' }, { id: 'BNCC3', habilidade: 'EF15LP01', texto: 'Identificar a função social de textos (convites, bilhetes, rótulos).' }, { id: 'BNCC4', habilidade: 'EF01LP04', texto: 'Localizar informações explícitas em textos curtos e simples.' }, { id: 'BNCC5', habilidade: 'EF15LP03', texto: 'Compreender o assunto principal de textos lidos por outra pessoa.' } ];
+    const descritores3e4ano = [ { id: 'BNCC6', habilidade: 'EF35LP01', texto: 'Ler e compreender textos curtos com autonomia.' }, { id: 'BNCC7', habilidade: 'EF35LP05', texto: 'Inferir o sentido de palavras ou expressões com base no contexto.' }, { id: 'BNCC8', habilidade: 'EF35LP02', texto: 'Identificar a finalidade de diferentes gêneros textuais (lendas, fábulas, notícias).' }, { id: 'BNCC9', habilidade: 'EF35LP03', texto: 'Localizar informações explícitas em textos de média extensão.' }, { id: 'BNCC10', habilidade: 'EF35LP26', texto: 'Identificar os elementos de uma narrativa (personagens, tempo, espaço).' } ];
+    const descritores5ano = [ { id: 'D1', habilidade: 'EF35LP03', texto: 'Localizar informações explícitas em um texto.' }, { id: 'D3', habilidade: 'EF35LP05', texto: 'Inferir o sentido de uma palavra ou expressão.' }, { id: 'D4', habilidade: 'EF35LP04', texto: 'Inferir uma informação implícita em um texto.' }, { id: 'D6', habilidade: 'EF15LP03', texto: 'Identificar o tema de um texto.' }, { id: 'D11', habilidade: 'EF35LP15', texto: 'Distinguir um fato da opinião relativa a esse fato.' }, { id: 'D5', habilidade: 'EF35LP24', texto: 'Interpretar texto com auxílio de material gráfico diverso (propagandas, quadrinhos, foto etc.).' }, { id: 'D9', habilidade: 'EF35LP02', texto: 'Identificar a finalidade de textos de diferentes gêneros.' }, { id: 'D15', habilidade: 'EF35LP28', texto: 'Reconhecer diferentes formas de tratar uma informação na comparação de textos que tratam do mesmo tema.' }, { id: 'D2', habilidade: 'EF35LP06', texto: 'Estabelecer relações entre partes de um texto, identificando repetições ou substituições.' }, { id: 'D7', habilidade: 'EF35LP26', texto: 'Identificar o conflito gerador do enredo e os elementos que constroem a narrativa.' }, { id: 'D8', habilidade: 'EF35LP27', texto: 'Estabelecer relação causa/consequência entre partes e elementos do texto.' }, { id: 'D12', habilidade: 'EF35LP14', texto: 'Estabelecer relações lógico-discursivas presentes no texto (marcadas por conjunções, advérbios etc.).' }, { id: 'D13', habilidade: 'EF35LP25', texto: 'Identificar efeitos de ironia ou humor em textos variados.' }, { id: 'D14', habilidade: 'EF35LP12', texto: 'Identificar o efeito de sentido decorrente do uso da pontuação e de outras notações.' }, { id: 'D10', habilidade: 'EF35LP11', texto: 'Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.' }, ];
+    const descritoresCompletos = [ { id: 'D1', habilidade: 'EF89LP03', texto: 'Localizar informações explícitas em um texto.' }, { id: 'D3', habilidade: 'EF89LP05', texto: 'Inferir o sentido de uma palavra ou expressão.' }, { id: 'D4', habilidade: 'EF89LP04', texto: 'Inferir uma informação implícita em um texto.' }, { id: 'D6', habilidade: 'EF69LP04', texto: 'Identificar o tema de um texto.' }, { id: 'D14', habilidade: 'EF89LP08', texto: 'Distinguir um fato da opinião relativa a esse fato.' }, { id: 'D5', habilidade: 'EF69LP02', texto: 'Interpretar texto com auxílio de material gráfico diverso.' }, { id: 'D12', habilidade: 'EF69LP01', texto: 'Identificar a finalidade de textos de diferentes gêneros.' }, { id: 'D20', habilidade: 'EM13LP01', texto: 'Reconhecer diferentes formas de tratar uma informação na comparação de textos.' }, { id: 'D21', habilidade: 'EM13LP02', texto: 'Reconhecer posições distintas entre duas ou mais opiniões relativas ao mesmo fato ou tema.' }, { id: 'D2', habilidade: 'EF89LP16', texto: 'Estabelecer relações entre partes de um texto.' }, { id: 'D7', habilidade: 'EF89LP24', texto: 'Identificar a tese de um texto.' }, { id: 'D8', habilidade: 'EF89LP25', texto: 'Estabelecer relação entre a tese e os argumentos oferecidos para sustentá-la.' }, { id: 'D9', habilidade: 'EF89LP06', texto: 'Diferenciar as partes principais das secundárias em um texto.' }, { id: 'D10', habilidade: 'EF89LP33', texto: 'Identificar o conflito gerador do enredo e os elementos que constroem a narrativa.' }, { id: 'D11', habilidade: 'EF89LP17', texto: 'Estabelecer relação causa/consequência entre partes e elementos do texto.' }, { id: 'D15', habilidade: 'EF89LP15', texto: 'Estabelecer relações lógico-discursivas presentes no texto.' }, { id: 'D16', habilidade: 'EM13LP09', texto: 'Identificar efeitos de ironia ou humor em textos variados.' }, { id: 'D17', habilidade: 'EF89LP13', texto: 'Reconhecer o efeito de sentido decorrente do uso da pontuação e de outras notações.' }, { id: 'D18', habilidade: 'EM13LP08', texto: 'Reconhecer o efeito de sentido decorrente da escolha de uma determinada palavra ou expressão.' }, { id: 'D19', habilidade: 'EM13LP06', texto: 'Reconhecer o efeito de sentido decorrente da exploração de recursos ortográficos e/ou morfossintáticos.' }, { id: 'D13', habilidade: 'EM13LP05', texto: 'Identificar as marcas linguísticas que evidenciam o locutor e o interlocutor de um texto.' }, { id: 'D22', habilidade: 'EM13LP01', texto: 'Reconhecer o gênero textual.' }, { id: 'D23', habilidade: 'EM13LP05', texto: 'Identificar quem fala no texto (enunciador) e para quem o texto se destina (enunciatário).' }, { id: 'D24', habilidade: 'EM13LP02', texto: 'Reconhecer o objetivo ou a finalidade do texto.' }, { id: 'D25', habilidade: 'EM13LP03', texto: 'Estabelecer relações de sentido marcadas por elementos coesivos (conectivos, pronomes).' }, { id: 'D26', habilidade: 'EM13LP01', texto: 'Analisar a relação de sentido entre o texto verbal e o não verbal (imagens, gráficos).' }, { id: 'D27', habilidade: 'EM13LP09', texto: 'Reconhecer o efeito de sentido decorrente do uso de recursos estilísticos (figuras de linguagem).' }, { id: 'D28', habilidade: 'EF69LP48', texto: 'Identificar o referente de um pronome pessoal, possessivo ou demonstrativo.' }, { id: 'D29', habilidade: 'EF08LP04', texto: 'Utilizar conhecimentos linguísticos e gramaticais (ortografia, regência, concordância, pontuação).' }, { id: 'D30', habilidade: 'EF89LP27', texto: 'Identificar a regularidade de regência verbal e nominal.' }, { id: 'D31', habilidade: 'EF07LP04', texto: 'Reconhecer o uso de crase.' }, { id: 'D32', habilidade: 'EF06LP04', texto: 'Analisar a função e as flexões de substantivos e adjetivos.' }, { id: 'D33', habilidade: 'EF07LP10', texto: 'Analisar o efeito de sentido do uso de tempos e modos verbais.' }, { id: 'D34', habilidade: 'EF08LP12', texto: 'Identificar a função de advérbios e locuções adverbiais em um texto.' }, { id: 'D35', habilidade: 'EF08LP13', texto: 'Identificar a função de preposições e conjunções em um texto.' }, { id: 'D36', habilidade: 'EF09LP11', texto: 'Identificar o período simples e o composto.' }, { id: 'D37', habilidade: 'EF09LP12', texto: 'Identificar a relação de coordenação e subordinação entre orações.' }, { id: 'D38', habilidade: 'EF89LP30', texto: 'Identificar as vozes do discurso (direto, indireto, indireto livre).' }, { id: 'D39', habilidade: 'EF69LP55', texto: 'Reconhecer os elementos da narrativa: enredo, personagens, tempo, espaço e narrador.' }, { id: 'D40', habilidade: 'EF69LP47', texto: 'Analisar, em textos narrativos, o tempo e o espaço.' }, { id: 'D41', habilidade: 'EF89LP33', texto: 'Analisar, em textos narrativos, o foco narrativo.' }, { id: 'D42', habilidade: 'EF69LP51', texto: 'Diferenciar os discursos direto, indireto e indireto livre.' }, { id: 'D43', habilidade: 'EF89LP07', texto: 'Analisar a estrutura de textos argumentativos (tese, argumentos e conclusão).' }, { id: 'D44', habilidade: 'EM13LP11', texto: 'Identificar os tipos de argumento (exemplificação, autoridade, etc.).' }, { id: 'D45', habilidade: 'EF69LP24', texto: 'Analisar a estrutura de um texto poético (versos, estrofes, rimas).' }, { id: 'D46', habilidade: 'EF89LP35', texto: 'Analisar os efeitos de sentido de figuras de linguagem como metáfora, metonímia, hipérbole, etc.' }, { id: 'D47', habilidade: 'EF69LP53', texto: 'Identificar os elementos e a organização de um texto dramático.' }, { id: 'D48', habilidade: 'EF69LP09', texto: 'Analisar um texto injuntivo (receita, manual de instrução).' }, { id: 'D49', habilidade: 'EF69LP17', texto: 'Analisar um texto normativo (leis, decretos).' }, { id: 'D50', habilidade: 'EF69LP06', texto: 'Analisar um texto jornalístico (notícia, reportagem, editorial).' }, { id: 'D51', habilidade: 'EF69LP01', texto: 'Analisar um texto publicitário.' }, { id: 'D52', habilidade: 'EF69LP05', texto: 'Analisar histórias em quadrinhos.' }, { id: 'D53', habilidade: 'EF05LP15', texto: 'Reconhecer o uso de letras maiúsculas e minúsculas.' }, { id: 'D54', habilidade: 'EF04LP03', texto: 'Reconhecer o uso de acentuação gráfica.' }, { id: 'D55', habilidade: 'EF35LP09', texto: 'Reconhecer o uso de sinais de pontuação (ponto final, de interrogação, de exclamação).' }, { id: 'D56', habilidade: 'EF05LP05', texto: 'Identificar a expressão de tempo, modo, pessoa e número nos verbos.' }, { id: 'D57', habilidade: 'EF06LP05', texto: 'Identificar a concordância nominal e verbal.' }, { id: 'D58', habilidade: 'EM13LP05', texto: 'Reconhecer variedades linguísticas (sociais, regionais, de registro).' }, { id: 'D59', habilidade: 'EM13LP04', texto: 'Reconhecer o preconceito linguístico.' }, { id: 'D60', habilidade: 'EF69LP56', texto: 'Reconhecer o uso da norma-padrão e de outras variedades linguísticas.' }, { id: 'D61', habilidade: 'EM13LP07', texto: 'Analisar o sentido de palavras ou expressões em seu contexto de uso.' } ];
+    const series = [ '1º Ano Fundamental', '2º Ano Fundamental', '3º Ano Fundamental', '4º Ano Fundamental', '5º Ano Fundamental', '6º Ano Fundamental', '7º Ano Fundamental', '8º Ano Fundamental', '9º Ano Fundamental', '1º Ano Médio', '2º Ano Médio', '3º Ano Médio' ];
+
+    // --- FORMATAÇÃO DOS IDs DOS DESCRITORES ---
+    const formatId = (id) => {
+        if (id.startsWith('D') && !id.includes('_P')) {
+            const num = id.substring(1);
+            return `D${num.padStart(2, '0')}_P`;
+        }
+        return id;
+    };
+    [descritores5ano, descritoresCompletos].forEach(arr => {
+        arr.forEach(desc => { desc.id = formatId(desc.id); });
+    });
+
+    const amaDescriptorsBySerie = {
+        '1º Ano Fundamental': ['BNCC1', 'BNCC2', 'BNCC3', 'BNCC4', 'BNCC5'],
+        '2º Ano Fundamental': ['BNCC1', 'BNCC2', 'BNCC3', 'BNCC4', 'BNCC5'],
+        '3º Ano Fundamental': ['BNCC6', 'BNCC7', 'BNCC8', 'BNCC9', 'BNCC10'],
+        '4º Ano Fundamental': ['BNCC6', 'BNCC7', 'BNCC8', 'BNCC9', 'BNCC10'],
+        '5º Ano Fundamental': ['D1', 'D3', 'D4', 'D6', 'D11', 'D5', 'D9', 'D15', 'D2', 'D7', 'D8', 'D12', 'D13', 'D14', 'D10'].map(formatId),
+        '6º Ano Fundamental': descritoresCompletos.map(d => d.id), '7º Ano Fundamental': descritoresCompletos.map(d => d.id), '8º Ano Fundamental': descritoresCompletos.map(d => d.id), '9º Ano Fundamental': descritoresCompletos.map(d => d.id), '1º Ano Médio': descritoresCompletos.map(d => d.id), '2º Ano Médio': descritoresCompletos.map(d => d.id), '3º Ano Médio': descritoresCompletos.map(d => d.id),
+    };
+    const paebsDescriptorsBySerie = {
+        '5º Ano Fundamental': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13', 'D14', 'D15'].map(formatId),
+        '9º Ano Fundamental': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13', 'D14', 'D15', 'D16', 'D17', 'D18', 'D19', 'D20', 'D21', 'D22', 'D23', 'D24', 'D25', 'D26', 'D27'].map(formatId),
+        '3º Ano Médio': ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'D13', 'D14', 'D15', 'D16', 'D17', 'D18', 'D19', 'D20', 'D21', 'D22', 'D23', 'D24', 'D25', 'D26', 'D27'].map(formatId),
+    };
+
+    // --- NOVAS LISTAS COMBINADAS ---
+    const mergeDescriptors = (...arrays) => {
+        const map = new Map();
+        arrays.flat().forEach(desc => {
+            if (!map.has(desc.id)) { map.set(desc.id, desc); }
+        });
+        return Array.from(map.values());
+    };
+
+    const descritores3a5anoCombinado = mergeDescriptors(descritores3e4ano, descritores5ano);
+    const descritores5anoCompleto = mergeDescriptors(descritores5ano, descritoresCompletos);
+
+    const descritoresPorSerie = { 
+        '1º Ano Fundamental': descritores1e2ano, '2º Ano Fundamental': descritores1e2ano, '3º Ano Fundamental': descritores3a5anoCombinado, '4º Ano Fundamental': descritores3a5anoCombinado, '5º Ano Fundamental': descritores5anoCompleto, '6º Ano Fundamental': descritoresCompletos, '7º Ano Fundamental': descritoresCompletos, '8º Ano Fundamental': descritoresCompletos, '9º Ano Fundamental': descritoresCompletos, '1º Ano Médio': descritoresCompletos, '2º Ano Médio': descritoresCompletos, '3º Ano Médio': descritoresCompletos 
+    };
+
+    // --- Mapa unificado de descritores para busca rápida ---
+    const todosDescritoresMap = [ ...descritores1e2ano, ...descritores3e4ano, ...descritores5ano, ...descritoresCompletos ].reduce((map, desc) => { map[desc.id] = desc; return map; }, {});
+
+    // --- ESTADO DA APLICAÇÃO ---
+    let serieAtual = '';
+    let quantidadeQuestoes = 10;
+    let quizData = null;
+    let currentSimulado = null;
+    let userAnswers = [];
+
+    // --- ELEMENTOS DO DOM ---
+    const telaSeries = document.getElementById('tela-series');
+    const telaSelecaoSimulado = document.getElementById('tela-selecao-simulado');
+    const telaConteudo = document.getElementById('tela-conteudo');
+    const containerSeries = telaSeries.querySelector('.grid');
+    const loadingEl = document.getElementById('loading');
+    const errorMessageEl = document.getElementById('error-message');
+    const quizContainer = document.getElementById('quiz-container');
+    const modal = document.getElementById('modal-descritores');
+    const modalSerieTitulo = document.getElementById('modal-serie-titulo');
+    const listaDescritoresModalEl = document.getElementById('lista-descritores-modal');
+    const btnGerarConteudoModal = document.getElementById('btn-gerar-conteudo-modal');
+    const btnFecharModal = document.getElementById('btn-fechar-modal');
+    const modalError = document.getElementById('modal-error');
+
+    // --- FUNÇÕES DE NAVEGAÇÃO E MODAL ---
+    function mostrarTela(tela) {
+        telaSeries.classList.add('hidden');
+        telaSelecaoSimulado.classList.add('hidden');
+        telaConteudo.classList.add('hidden');
+        tela.classList.remove('hidden');
+    }
+
+    function abrirModal(serie, tipoSimulado = null) {
+        serieAtual = serie;
+        currentSimulado = tipoSimulado;
+        
+        modalSerieTitulo.textContent = serie;
+        
+        let descritoresParaExibir = [];
+        if(tipoSimulado === 'PAEBS') {
+            const descritoresIds = paebsDescriptorsBySerie[serie] || [];
+            descritoresParaExibir = descritoresPorSerie[serie].filter(d => descritoresIds.includes(d.id));
+            modalSerieTitulo.textContent = `Simulado PAEBS: ${serie}`;
+        } else if (tipoSimulado === 'AMA') {
+            const descritoresIds = amaDescriptorsBySerie[serie] || [];
+            descritoresParaExibir = descritoresPorSerie[serie].filter(d => descritoresIds.includes(d.id));
+            modalSerieTitulo.textContent = `Simulado AMA: ${serie}`;
+        } else {
+            descritoresParaExibir = descritoresPorSerie[serie];
+        }
+
+        listaDescritoresModalEl.innerHTML = '';
+        modalError.classList.add('hidden');
+        
+        if (descritoresParaExibir && descritoresParaExibir.length > 0) {
+            listaDescritoresModalEl.classList.remove('hidden');
+            descritoresParaExibir.forEach(desc => {
+                const div = document.createElement('div');
+                div.className = 'flex items-start p-3 bg-white rounded-lg hover:bg-violet-50 transition-colors min-h-20';
+                div.innerHTML = `<input id="${desc.id}" type="checkbox" value="${desc.id}" class="h-5 w-5 rounded border-gray-300 text-violet-600 focus:ring-violet-500 mt-0.5"><label for="${desc.id}" class="ml-3 text-sm text-slate-700"><strong class="text-violet-700">${desc.id} (${desc.habilidade}):</strong> ${desc.texto}</label>`;
+                listaDescritoresModalEl.appendChild(div);
+            });
+        }
+        modal.classList.remove('hidden');
+    }
+
+    function fecharModal() {
+        modal.classList.add('hidden');
+        currentSimulado = null;
+    }
+
+    // --- LÓGICA DO QUIZ ---
+    function simpleMarkdownToHtml(text) {
+        if (!text) return '';
+        return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/__(.*?)__/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>').replace(/_(.*?)_/g, '<em>$1</em>').replace(/\n/g, '<br>');
+    }
+
+    function renderizarQuiz(data) {
+        const textoBaseEl = document.getElementById('quiz-texto-base');
+        const questoesEl = document.getElementById('quiz-questoes');
+        const gabaritoContentEl = document.getElementById('gabarito-content');
+        const btnFinalizar = document.getElementById('btn-finalizar-quiz');
+
+        questoesEl.innerHTML = '';
+        document.getElementById('quiz-gabarito').classList.add('hidden');
+        document.getElementById('quiz-resultado').classList.add('hidden');
+        btnFinalizar.classList.remove('hidden');
+        document.getElementById('btn-voltar-ao-inicio').classList.remove('hidden');
+        userAnswers = new Array(data.questoes.length).fill(null);
+        textoBaseEl.innerHTML = simpleMarkdownToHtml(data.textoBase);
+
+        data.questoes.forEach((q, index) => {
+            const questaoContainer = document.createElement('div');
+            questaoContainer.className = 'p-4 border rounded-lg bg-white shadow-sm';
+            const headerEl = document.createElement('div');
+            headerEl.className = 'flex justify-between items-start mb-3';
+
+            let descriptorHTML = '';
+            const descritorValueFromApi = q.descritor;
+            if (descritorValueFromApi) {
+                const descritorId = Object.keys(todosDescritoresMap).find(key => descritorValueFromApi.startsWith(key));
+                if (descritorId) {
+                    const descritorObj = todosDescritoresMap[descritorId];
+                    descriptorHTML = `<span class="text-xs text-right font-semibold text-purple-700 bg-purple-100 px-2 py-1 rounded-full">${descritorObj.id} - ${descritorObj.habilidade}</span>`;
+                }
+            }
+
+            headerEl.innerHTML = `<p class="font-bold text-lg text-slate-800">Questão ${index + 1}</p>${descriptorHTML}`;
+            
+            const perguntaEl = document.createElement('p');
+            perguntaEl.className = 'text-slate-700 mb-4';
+            perguntaEl.innerHTML = simpleMarkdownToHtml(q.pergunta);
+
+            const opcoesContainer = document.createElement('div');
+            opcoesContainer.className = 'grid grid-cols-1 md:grid-cols-2 gap-3';
+            opcoesContainer.dataset.questionIndex = index;
+
+            q.opcoes.forEach((opcaoTexto, opcaoIndex) => {
+                const button = document.createElement('button');
+                const letra = String.fromCharCode(65 + opcaoIndex);
+                const textoLimpoParaExibir = opcaoTexto.replace(/^\s*[a-zA-Z][.)]\s*/, '');
+                button.className = 'text-left p-3 border rounded-lg hover:bg-violet-100 transition-colors text-slate-700';
+                button.innerHTML = `<span class="font-bold mr-2">(${letra})</span> ${simpleMarkdownToHtml(textoLimpoParaExibir)}`;
+                button.dataset.opcaoTexto = opcaoTexto;
+                button.onclick = (e) => selecionarOpcao(e.currentTarget);
+                opcoesContainer.appendChild(button);
+            });
+
+            questaoContainer.appendChild(headerEl);
+            questaoContainer.appendChild(perguntaEl);
+            questaoContainer.appendChild(opcoesContainer);
+            questoesEl.appendChild(questaoContainer);
+        });
+
+        gabaritoContentEl.innerHTML = Object.entries(data.gabarito)
+            .map(([num, resp]) => `<div class="text-center p-2 rounded bg-white border"><strong class="text-purple-700">${num}:</strong> ${resp}</div>`).join('');
+    }
+
+    function selecionarOpcao(buttonEl) {
+        const opcoesContainer = buttonEl.parentElement;
+        const questionIndex = parseInt(opcoesContainer.dataset.questionIndex);
+        userAnswers[questionIndex] = buttonEl.dataset.opcaoTexto;
+
+        Array.from(opcoesContainer.children).forEach(btn => {
+            btn.disabled = true;
+            if (btn.dataset.opcaoTexto === quizData.questoes[questionIndex].respostaCorreta) {
+                btn.classList.add('opcao-correta');
+            }
+        });
+
+        if (buttonEl.dataset.opcaoTexto !== quizData.questoes[questionIndex].respostaCorreta) {
+            buttonEl.classList.add('opcao-incorreta');
+        }
+    }
+
+    function finalizarQuiz() {
+        let acertos = 0;
+        const totalQuestoes = quizData.questoes.length;
+
+        quizData.questoes.forEach((questao, index) => {
+            const opcoesContainer = document.querySelector(`[data-question-index='${index}']`);
+            if (opcoesContainer) {
+                 Array.from(opcoesContainer.children).forEach(btn => {
+                    btn.disabled = true;
+                    if (btn.dataset.opcaoTexto === questao.respostaCorreta && !btn.classList.contains('opcao-correta')) {
+                        btn.classList.add('opcao-correta');
+                    }
+                });
+            }
+            if (userAnswers[index] === questao.respostaCorreta) {
+                acertos++;
+            }
+        });
+
+        const erros = totalQuestoes - acertos;
+        const resultadoEl = document.getElementById('quiz-resultado');
+        resultadoEl.innerHTML = `
+            <div class="p-6 bg-slate-50 rounded-lg inline-block border shadow-sm">
+                 <h3 class="text-xl font-semibold text-indigo-700 mb-4">Seu Desempenho</h3>
+                 <div class="flex space-x-8 justify-center">
+                    <div class="text-center"><p class="text-4xl font-bold text-green-600">${acertos}</p><p class="text-sm font-medium text-slate-600">Acertos</p></div>
+                    <div class="text-center"><p class="text-4xl font-bold text-red-500">${erros}</p><p class="text-sm font-medium text-slate-600">Erros</p></div>
+                </div>
+            </div>`;
+        resultadoEl.classList.remove('hidden');
+        const gabaritoContainer = document.getElementById('quiz-gabarito');
+        gabaritoContainer.classList.remove('hidden');
+        document.getElementById('btn-finalizar-quiz').classList.add('hidden');
+        
+        gabaritoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // --- LÓGICA PRINCIPAL ---
+    document.addEventListener('DOMContentLoaded', () => {
+        series.forEach(serie => {
+            const button = document.createElement('button');
+            button.className = 'text-left p-4 bg-slate-100 rounded-lg hover:bg-violet-100 hover:ring-2 hover:ring-violet-500 transition-all focus:outline-none focus:ring-2 focus:ring-violet-400';
+            button.innerHTML = `<span class="font-semibold text-slate-700">${serie.replace(' Fundamental', '').replace(' Médio', '')}</span><p class="text-xs text-slate-500">${serie.includes('Fundamental') ? 'Ens. Fundamental' : 'Ens. Médio'}</p>`;
+            button.onclick = () => abrirModal(serie);
+            containerSeries.appendChild(button);
+        });
+
+        document.getElementById('btn-simulado-paebs').onclick = () => abrirSelecaoSimulado('PAEBS');
+        document.getElementById('btn-simulado-ama').onclick = () => abrirSelecaoSimulado('AMA');
+        document.getElementById('btn-voltar-inicio').onclick = () => mostrarTela(telaSeries);
+        document.getElementById('btn-voltar-simulado').onclick = () => mostrarTela(telaSeries);
+        btnFecharModal.onclick = fecharModal;
+        btnGerarConteudoModal.onclick = iniciarGeracaoDeConteudo;
+        document.getElementById('btn-finalizar-quiz').onclick = finalizarQuiz;
+        document.getElementById('btn-voltar-ao-inicio').onclick = () => mostrarTela(telaSeries);
+    });
+
+    function abrirSelecaoSimulado(tipo) {
+        currentSimulado = tipo;
+        const tituloEl = document.getElementById('titulo-selecao-simulado');
+        const gridEl = document.getElementById('grid-series-simulado');
+        tituloEl.textContent = `Simulado ${tipo}: Escolha a turma`;
+        gridEl.innerHTML = '';
+        let seriesFiltradas = (tipo === 'AMA') ? series.filter(s => (parseInt(s.split('º')[0]) >= 5 && s.includes('Fundamental')) || s.includes('Médio')) : series.filter(s => s === '5º Ano Fundamental' || s === '9º Ano Fundamental' || s === '3º Ano Médio');
+        seriesFiltradas.forEach(serie => {
+            const button = document.createElement('button');
+            button.className = 'text-left p-4 bg-slate-100 rounded-lg hover:bg-violet-100 hover:ring-2 hover:ring-violet-500 transition-all focus:outline-none focus:ring-2 focus:ring-violet-400';
+            button.innerHTML = `<span class="font-semibold text-slate-700">${serie.replace(' Fundamental', '').replace(' Médio', '')}</span><p class="text-xs text-slate-500">${serie.includes('Fundamental') ? 'Ens. Fundamental' : 'Ens. Médio'}</p>`;
+            button.onclick = () => abrirModal(serie, tipo);
+            gridEl.appendChild(button);
+        });
+        mostrarTela(telaSelecaoSimulado);
+    }
+
+    async function iniciarGeracaoDeConteudo() {
+        const checkboxes = listaDescritoresModalEl.querySelectorAll('input[type="checkbox"]:checked');
+        const idsDescritores = Array.from(checkboxes).map(cb => cb.value);
+        
+        modalError.classList.add('hidden');
+        if (idsDescritores.length === 0) {
+            modalError.classList.remove('hidden');
+            return;
+        }
+
+        const textosDescritores = descritoresPorSerie[serieAtual].filter(d => idsDescritores.includes(d.id)).map(d => `"${d.id} (${d.habilidade}): ${d.texto}"`);
+        let numQuestoes = (currentSimulado === 'PAEBS') ? 24 : (currentSimulado === 'AMA') ? 10 : quantidadeQuestoes;
+
+        fecharModal();
+        mostrarTela(telaConteudo);
+        loadingEl.classList.remove('hidden');
+        quizContainer.classList.add('hidden');
+        errorMessageEl.classList.add('hidden');
+
+        try {
+            let responseJsonText = await callGeminiAPI(serieAtual, textosDescritores, numQuestoes);
+            const jsonMatch = responseJsonText.match(/\{[\s\S]*\}/);
+            if (!jsonMatch || !jsonMatch[0]) { throw new Error("A resposta da API não continha um formato JSON reconhecível."); }
+            
+            responseJsonText = jsonMatch[0];
+            quizData = JSON.parse(responseJsonText);
+            
+            if (!quizData.textoBase || !quizData.questoes || !Array.isArray(quizData.questoes) || !quizData.gabarito) { throw new Error("O JSON retornado pela API não possui a estrutura esperada (textoBase, questoes, gabarito)."); }
+
+            renderizarQuiz(quizData);
+            quizContainer.classList.remove('hidden');
+        } catch (error) {
+            console.error("Erro ao gerar ou processar o conteúdo:", error);
+            errorMessageEl.innerHTML = `<strong>Oops! Algo deu errado ao gerar o conteúdo.</strong><br>Detalhe do erro: ${error.message}<br>Por favor, tente novamente.`;
+            errorMessageEl.classList.remove('hidden');
+        } finally {
+            loadingEl.classList.add('hidden');
+        }
+    }
+    
+    async function callGeminiAPI(serie, descritores, numQuestoes) {
+        const apiKey = "AIzaSyATedapm06C9-rMxJjc9CdY39DGLpx3FbA"; 
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const promptDescritores = `A atividade deve trabalhar especificamente os seguintes descritores: ${descritores.join('; ')}.`;
+        const systemPrompt = `Aja como um professor de Língua Portuguesa especialista em criar conteúdo pedagógico. Sua tarefa é criar uma atividade interativa. Você DEVE retornar a resposta como um objeto JSON VÁLIDO. O JSON deve ter a seguinte estrutura: { "textoBase": "um texto curto e interessante...", "questoes": [ { "pergunta": "Texto da pergunta 1?", "descritor": "O código do descritor avaliado (ex: 'D01_P' ou 'BNCC1')", "opcoes": ["Opção A", "Opção B", "Opção C", "Opção D"], "respostaCorreta": "Opção C" } ], "gabarito": { "1": "A", "2": "C" } }. Para cada questão, preencha o campo "descritor" com o CÓDIGO do descritor que ela avalia, escolhido da lista fornecida no prompt do usuário. A propriedade 'respostaCorreta' deve conter o TEXTO EXATO de uma das 'opcoes'. A propriedade 'gabarito' deve mapear o número da questão para a letra da alternativa correta (A, B, C, ou D). Não inclua NADA fora do objeto JSON na sua resposta.`;
+        const userQuery = `Crie uma atividade de Língua Portuguesa para um aluno do ${serie}. A atividade deve conter um texto base e ${numQuestoes} questões de múltipla escolha. ${promptDescritores} O nível de linguagem e complexidade deve ser adequado para a série. Gere o JSON conforme as instruções, garantindo que cada questão tenha seu respectivo campo 'descritor' preenchido.`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            generationConfig: { responseMimeType: "application/json" },
+        };
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) { throw new Error(`Erro na API: ${response.statusText}`); }
+
+        const result = await response.json();
+        const candidate = result.candidates?.[0];
+
+        if (candidate && candidate.content?.parts?.[0]?.text) {
+            return candidate.content.parts[0].text;
+        } else {
+            console.error("Resposta da API inválida:", result);
+            throw new Error("A resposta da API não continha o JSON esperado.");
+        }
+    }
+</script>
+
+</body>
+</html>
+
